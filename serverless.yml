@@ -1,0 +1,75 @@
+service: phonebook
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  iam: 
+    role: 
+      managedPolicies:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+plugins:
+  - serverless-offline
+
+functions:
+  list:
+    handler: functions/getbook.hello
+    events: 
+      - http:
+          method: get
+          path: person
+          cors: true
+
+  getone:
+    handler: functions/getone.getone
+    events: 
+      - http:
+          method: get
+          path: person/{key}
+          cors: true
+
+  add:
+    handler: functions/addperson.add
+    events:
+      - http:
+          method: post
+          path: person
+          cors: true
+
+  update:
+    handler: functions/update.update
+    events: 
+      - http:
+          method: put
+          path: person
+          cors: true
+
+  delete:
+    handler: functions/delete.delete
+    events:
+      - http:
+          method: delete
+          path: person/{key}
+          cors: true
+
+# resources: 
+#   Resources:
+#     PhoneBucket:
+#       Type: AWS::S3::Bucket
+#       Properties:
+#         BucketName: mojphonebook
+#         CorsConfiguration:
+#           CorsRules:
+#             - AllowedHeaders:
+#                 - '*'
+#               AllowedMethods:
+#                 - GET
+#                 - POST
+#                 - PUT
+#                 - DELETE
+#               AllowedOrigins:
+#                 - '*'
+
