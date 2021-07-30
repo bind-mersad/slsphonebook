@@ -10,6 +10,7 @@ provider:
     role: 
       managedPolicies:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 
 plugins:
   - serverless-offline
@@ -31,12 +32,28 @@ functions:
           path: person/{key}
           cors: true
 
+  getonefrombase:
+    handler: functions/getonefrombase.getonefrombase
+    events: 
+      - http:
+          method: get
+          path: person/getfrombase
+          cors: true
+
   add:
     handler: functions/addperson.add
     events:
       - http:
           method: post
           path: person
+          cors: true
+
+  adtobase:
+    handler: functions/addtobase.add
+    events:
+      - http:
+          method: post
+          path: person/base
           cors: true
 
   update:
@@ -55,21 +72,31 @@ functions:
           path: person/{key}
           cors: true
 
-# resources: 
-#   Resources:
-#     PhoneBucket:
-#       Type: AWS::S3::Bucket
-#       Properties:
-#         BucketName: mojphonebook
-#         CorsConfiguration:
-#           CorsRules:
-#             - AllowedHeaders:
-#                 - '*'
-#               AllowedMethods:
-#                 - GET
-#                 - POST
-#                 - PUT
-#                 - DELETE
-#               AllowedOrigins:
-#                 - '*'
+resources: 
+  Resources:
+    Database:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: guid
+            AttributeType: S
 
+          -
+            AttributeName: name
+            AttributeType: S
+
+        KeySchema:
+          -
+            AttributeName: guid
+            KeyType: HASH
+
+          -
+            AttributeName: name
+            KeyType: RANGE
+        
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        
+        TableName: "phonebook"

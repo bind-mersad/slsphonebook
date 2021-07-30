@@ -3,7 +3,7 @@
 module.exports.response = async (statusCode, message) => {
   return {
     statusCode,
-    body: JSON.stringify(await message)
+    body: JSON.stringify(message)
   };
 
   // Use this code if you don't use the http event with the LAMBDA-PROXY integration

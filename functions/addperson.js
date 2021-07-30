@@ -2,7 +2,6 @@
 
 // import { boiler } from 'boiler.js';
 const { response } = require('../request');
-const { phonebook } = require('../phonebook');
 const { randomUUID } = require('crypto');
 
 const AWS = require('aws-sdk');

@@ -83,10 +83,22 @@
         "LogGroupName": "/aws/lambda/phonebook-dev-getone"
       }
     },
+    "GetonefrombaseLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/phonebook-dev-getonefrombase"
+      }
+    },
     "AddLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
         "LogGroupName": "/aws/lambda/phonebook-dev-add"
+      }
+    },
+    "AdtobaseLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/phonebook-dev-adtobase"
       }
     },
     "UpdateLogGroup": {
@@ -177,7 +189,8 @@
           ]
         },
         "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+          "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+          "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
         ]
       }
     },
@@ -188,7 +201,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/phonebook/dev/1626963094425-2021-07-22T14:11:34.425Z/phonebook.zip"
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
         },
         "Handler": "functions/getbook.hello",
         "Runtime": "nodejs14.x",
@@ -213,7 +226,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/phonebook/dev/1626963094425-2021-07-22T14:11:34.425Z/phonebook.zip"
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
         },
         "Handler": "functions/getone.getone",
         "Runtime": "nodejs14.x",
@@ -231,6 +244,31 @@
         "GetoneLogGroup"
       ]
     },
+    "GetonefrombaseLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
+        },
+        "Handler": "functions/getonefrombase.getonefrombase",
+        "Runtime": "nodejs14.x",
+        "FunctionName": "phonebook-dev-getonefrombase",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetonefrombaseLogGroup"
+      ]
+    },
     "AddLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -238,7 +276,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/phonebook/dev/1626963094425-2021-07-22T14:11:34.425Z/phonebook.zip"
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
         },
         "Handler": "functions/addperson.add",
         "Runtime": "nodejs14.x",
@@ -256,6 +294,31 @@
         "AddLogGroup"
       ]
     },
+    "AdtobaseLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
+        },
+        "Handler": "functions/addtobase.add",
+        "Runtime": "nodejs14.x",
+        "FunctionName": "phonebook-dev-adtobase",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "AdtobaseLogGroup"
+      ]
+    },
     "UpdateLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -263,7 +326,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/phonebook/dev/1626963094425-2021-07-22T14:11:34.425Z/phonebook.zip"
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
         },
         "Handler": "functions/update.update",
         "Runtime": "nodejs14.x",
@@ -288,7 +351,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/phonebook/dev/1626963094425-2021-07-22T14:11:34.425Z/phonebook.zip"
+          "S3Key": "serverless/phonebook/dev/1627659466262-2021-07-30T15:37:46.262Z/phonebook.zip"
         },
         "Handler": "functions/delete.delete",
         "Runtime": "nodejs14.x",
@@ -306,54 +369,74 @@
         "DeleteLogGroup"
       ]
     },
-    "ListLambdaVersion45rISzQKuNppX5yQIZRNFmaTOFNcY4Me3I7Q1r5VsM": {
+    "ListLambdaVersionDXHW5hoDSOi4wZReTBtCu2LaaKKypU8e2VB5tbtAVog": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ListLambdaFunction"
         },
-        "CodeSha256": "P1CsZWR1fPYJQ8nHCV3TxkQz9aPFWh9lwW0lfo8mUqs="
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
       }
     },
-    "GetoneLambdaVersion9fRZ3uCapDpPplI0H9SIl4sgEUR3UWRg5nBSvScLCrM": {
+    "GetoneLambdaVersionxMcbiQXV6cb3JeAjiKsi0uc4teJRG6Pp72aRDoMyw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetoneLambdaFunction"
         },
-        "CodeSha256": "P1CsZWR1fPYJQ8nHCV3TxkQz9aPFWh9lwW0lfo8mUqs="
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
       }
     },
-    "AddLambdaVersionID9yEm997YcAzBDTJhgNksV61H5RICzEilC72bldA": {
+    "GetonefrombaseLambdaVersionxBtVw6qU4jw6uGxagXGB4S4VTtAuXFGvO6wxxXl33uA": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetonefrombaseLambdaFunction"
+        },
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
+      }
+    },
+    "AddLambdaVersion5cfF0sCltz5O7bXZWmkZboSQdhDFvUPkLu5aynVzyPw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AddLambdaFunction"
         },
-        "CodeSha256": "P1CsZWR1fPYJQ8nHCV3TxkQz9aPFWh9lwW0lfo8mUqs="
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
       }
     },
-    "UpdateLambdaVersionH8nTAveLMU5Y7t9L6FhLM9LRyAfWgHe8gZfGslXn8": {
+    "AdtobaseLambdaVersionuLX7Z0EZVMHrUu12GlMm4JPDUu0ErONAx4K0idQGSM": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AdtobaseLambdaFunction"
+        },
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
+      }
+    },
+    "UpdateLambdaVersionEozaUS1iYLN56vrYfQvx6WA64WfhUCjdBEDy2jsCk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UpdateLambdaFunction"
         },
-        "CodeSha256": "P1CsZWR1fPYJQ8nHCV3TxkQz9aPFWh9lwW0lfo8mUqs="
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
       }
     },
-    "DeleteLambdaVersionspB41fRf5RNdiIDqVGlktOBfRIMBeTvTpqVfAuqYsw": {
+    "DeleteLambdaVersiondGRL4j90TAbEzdcd7OhSbrqVKdZHBkrjnwcObXAXreY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DeleteLambdaFunction"
         },
-        "CodeSha256": "P1CsZWR1fPYJQ8nHCV3TxkQz9aPFWh9lwW0lfo8mUqs="
+        "CodeSha256": "pAgg3ZF3EcGjyMyXparizu5PERJ6CxHxlJZeOWPGBNg="
       }
     },
     "ApiGatewayRestApi": {
@@ -390,6 +473,30 @@
           "Ref": "ApiGatewayResourcePerson"
         },
         "PathPart": "{key}",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourcePersonGetfrombase": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourcePerson"
+        },
+        "PathPart": "getfrombase",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourcePersonBase": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourcePerson"
+        },
+        "PathPart": "base",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -479,6 +586,96 @@
         },
         "ResourceId": {
           "Ref": "ApiGatewayResourcePersonKeyVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodPersonGetfrombaseOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+              },
+              "ResponseTemplates": {
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourcePersonGetfrombase"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodPersonBaseOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourcePersonBase"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -577,6 +774,52 @@
         "GetoneLambdaPermissionApiGateway"
       ]
     },
+    "ApiGatewayMethodPersonGetfrombaseGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourcePersonGetfrombase"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetonefrombaseLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "GetonefrombaseLambdaPermissionApiGateway"
+      ]
+    },
     "ApiGatewayMethodPersonPost": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -621,6 +864,52 @@
       },
       "DependsOn": [
         "AddLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayMethodPersonBasePost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourcePersonBase"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "AdtobaseLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "AdtobaseLambdaPermissionApiGateway"
       ]
     },
     "ApiGatewayMethodPersonPut": {
@@ -715,7 +1004,7 @@
         "DeleteLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1626963093233": {
+    "ApiGatewayDeployment1627659465064": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -726,9 +1015,13 @@
       "DependsOn": [
         "ApiGatewayMethodPersonOptions",
         "ApiGatewayMethodPersonKeyVarOptions",
+        "ApiGatewayMethodPersonGetfrombaseOptions",
+        "ApiGatewayMethodPersonBaseOptions",
         "ApiGatewayMethodPersonGet",
         "ApiGatewayMethodPersonKeyVarGet",
+        "ApiGatewayMethodPersonGetfrombaseGet",
         "ApiGatewayMethodPersonPost",
+        "ApiGatewayMethodPersonBasePost",
         "ApiGatewayMethodPersonPut",
         "ApiGatewayMethodPersonKeyVarDelete"
       ]
@@ -807,12 +1100,86 @@
         }
       }
     },
+    "GetonefrombaseLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetonefrombaseLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
     "AddLambdaPermissionApiGateway": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
             "AddLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "AdtobaseLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AdtobaseLambdaFunction",
             "Arn"
           ]
         },
@@ -917,6 +1284,36 @@
           ]
         }
       }
+    },
+    "Database": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "guid",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "name",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "guid",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "name",
+            "KeyType": "RANGE"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "TableName": "phonebook"
+      }
     }
   },
   "Outputs": {
@@ -931,7 +1328,7 @@
     "ListLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ListLambdaVersion45rISzQKuNppX5yQIZRNFmaTOFNcY4Me3I7Q1r5VsM"
+        "Ref": "ListLambdaVersionDXHW5hoDSOi4wZReTBtCu2LaaKKypU8e2VB5tbtAVog"
       },
       "Export": {
         "Name": "sls-phonebook-dev-ListLambdaFunctionQualifiedArn"
@@ -940,25 +1337,43 @@
     "GetoneLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetoneLambdaVersion9fRZ3uCapDpPplI0H9SIl4sgEUR3UWRg5nBSvScLCrM"
+        "Ref": "GetoneLambdaVersionxMcbiQXV6cb3JeAjiKsi0uc4teJRG6Pp72aRDoMyw"
       },
       "Export": {
         "Name": "sls-phonebook-dev-GetoneLambdaFunctionQualifiedArn"
       }
     },
+    "GetonefrombaseLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetonefrombaseLambdaVersionxBtVw6qU4jw6uGxagXGB4S4VTtAuXFGvO6wxxXl33uA"
+      },
+      "Export": {
+        "Name": "sls-phonebook-dev-GetonefrombaseLambdaFunctionQualifiedArn"
+      }
+    },
     "AddLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AddLambdaVersionID9yEm997YcAzBDTJhgNksV61H5RICzEilC72bldA"
+        "Ref": "AddLambdaVersion5cfF0sCltz5O7bXZWmkZboSQdhDFvUPkLu5aynVzyPw"
       },
       "Export": {
         "Name": "sls-phonebook-dev-AddLambdaFunctionQualifiedArn"
       }
     },
+    "AdtobaseLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "AdtobaseLambdaVersionuLX7Z0EZVMHrUu12GlMm4JPDUu0ErONAx4K0idQGSM"
+      },
+      "Export": {
+        "Name": "sls-phonebook-dev-AdtobaseLambdaFunctionQualifiedArn"
+      }
+    },
     "UpdateLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UpdateLambdaVersionH8nTAveLMU5Y7t9L6FhLM9LRyAfWgHe8gZfGslXn8"
+        "Ref": "UpdateLambdaVersionEozaUS1iYLN56vrYfQvx6WA64WfhUCjdBEDy2jsCk"
       },
       "Export": {
         "Name": "sls-phonebook-dev-UpdateLambdaFunctionQualifiedArn"
@@ -967,7 +1382,7 @@
     "DeleteLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DeleteLambdaVersionspB41fRf5RNdiIDqVGlktOBfRIMBeTvTpqVfAuqYsw"
+        "Ref": "DeleteLambdaVersiondGRL4j90TAbEzdcd7OhSbrqVKdZHBkrjnwcObXAXreY"
       },
       "Export": {
         "Name": "sls-phonebook-dev-DeleteLambdaFunctionQualifiedArn"
