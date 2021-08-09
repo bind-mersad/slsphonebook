@@ -2,29 +2,29 @@
 
 // import { boiler } from 'boiler.js';
 const { response } = require('../request');
-const { phonebook } = require('../phonebook');
 
-const fs = require('fs');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
+
+const docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 module.exports.getonefrombase = async (event) => {
 
   try{
 
-    const { key } = event.pathParameters
+    const { name } = event.pathParameters
 
     const params = {
-      Bucket: 'mojphonebook',
-      Key: key
-    }
+      ExpressionAttributeValues: {
+        ':n': namee
+      },
+      KeyConditionExpression: 'name = :n',
+      TableName: 'phonebook'
+    };
 
-    const data = await s3.getObject(params).promise();
-
-    const stream = fs.createReadStream(data.Body, 'utf8');
-
-    return response(200, data.Body.toString()); // buffer object to string, body is a buffer object
+    const data = await docClient.query(params).promise();
     
+    return response(200, data);
+
   }catch(err){
     console.log(err);
     return response(500, ' Fula oko');

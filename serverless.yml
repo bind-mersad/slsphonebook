@@ -37,7 +37,23 @@ functions:
     events: 
       - http:
           method: get
-          path: person/getfrombase
+          path: person/getfrombase/{guid}/{name}
+          cors: true
+
+  get1:
+    handler: functions/getonefrombase.getonefrombase
+    events: 
+      - http:
+          method: get
+          path: person/getfrombase/{guid}
+          cors: true
+
+  get2:
+    handler: functions/getonefrombase.getonefrombase
+    events: 
+      - http:
+          method: get
+          path: person/getfrombase/{guid}/dslbhsf
           cors: true
 
   add:
